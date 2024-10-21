@@ -2,9 +2,12 @@ package com.thekleinbottle.carddatabase.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Car {
@@ -13,9 +16,21 @@ public class Car {
     private Long id;
     private String brand, model, color, registrationNumber;
     private int modelYear, price;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="owner")
+    private Owner owner;
     
     // @Column(name="explanation", nullable=false, length=512)
     // private String description;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
 
     public Car() {
     }
