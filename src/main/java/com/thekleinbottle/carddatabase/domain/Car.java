@@ -14,14 +14,13 @@ public class Car {
     private String brand, model, color, registrationNumber;
     private int modelYear, price;
     
-    @Column(name="explanation", nullable=false, length=512)
-    private String description;
+    // @Column(name="explanation", nullable=false, length=512)
+    // private String description;
 
     public Car() {
     }
     
-    public Car(String brand, String model, String color,
-        String registrationNumber, int modelYear, int price) {
+    public Car(String brand, String model, String color, String registrationNumber, int modelYear, int price) {
         super();
         this.brand = brand;
         this.model = model;
