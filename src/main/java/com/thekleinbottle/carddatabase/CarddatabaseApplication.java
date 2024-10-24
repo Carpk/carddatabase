@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.thekleinbottle.carddatabase.domain.AppUser;
+import com.thekleinbottle.carddatabase.domain.AppUserRepository;
 import com.thekleinbottle.carddatabase.domain.Car;
 import com.thekleinbottle.carddatabase.domain.CarRepository;
 import com.thekleinbottle.carddatabase.domain.Owner;
@@ -18,10 +20,13 @@ public class CarddatabaseApplication implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(CarddatabaseApplication.class);
 	private final CarRepository repository;
 	private final OwnerRepository orepository;
+	private final AppUserRepository urepository;
 
-	public CarddatabaseApplication(CarRepository repository, OwnerRepository orepository) {
+	public CarddatabaseApplication(CarRepository repository, 
+			OwnerRepository orepository, AppUserRepository urepository) {
 		this.repository = repository;
 		this.orepository = orepository;
+		this.urepository = urepository;
 	}
 
 	public static void main(String[] args) {
@@ -42,6 +47,9 @@ public class CarddatabaseApplication implements CommandLineRunner {
 			logger.info("brand: {}, model: {}",
 			car.getBrand(), car.getModel());
 		}
+
+		urepository.save(new AppUser("user", "$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue", "USER"));
+		urepository.save(new AppUser("admin","$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW", "ADMIN"));
 	}
 
 }
