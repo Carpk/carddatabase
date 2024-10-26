@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 import com.thekleinbottle.carddatabase.domain.AppUser;
 import com.thekleinbottle.carddatabase.domain.AppUserRepository;
@@ -16,6 +17,7 @@ import com.thekleinbottle.carddatabase.domain.Owner;
 import com.thekleinbottle.carddatabase.domain.OwnerRepository;
 
 @SpringBootApplication
+@EnableMethodSecurity
 public class CarddatabaseApplication implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(CarddatabaseApplication.class);
 	private final CarRepository repository;
