@@ -17,8 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -52,17 +55,24 @@ public class SecurityConfig {
     public AuthenticationManager uthenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+    
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
-            .sessionManagement((sessionManagement) -> 
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests((authorizeHttpRequests) -> 
-                authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated())
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
+            .authorizeHttpRequests((authorizeHttpRequests) ->
+                authorizeHttpRequests.anyRequest().permitAll());
+        
+        // http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
+        //     .sessionManagement((sessionManagement) -> 
+        //         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        //     .authorizeHttpRequests((authorizeHttpRequests) -> 
+        //         authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated())
+        //         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        //         .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
 
+        http.headers(header -> header.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "*")));
+        
         return http.build();
     }
 
@@ -75,6 +85,7 @@ public class SecurityConfig {
         config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(false);
+        // config.setExposedHeaders(Arrays.asList("*"));
         config.applyPermitDefaultValues();
 
         source.registerCorsConfiguration("/**", config);
