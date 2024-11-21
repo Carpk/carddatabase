@@ -1,6 +1,6 @@
 package com.thekleinbottle.carddatabase;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,17 +53,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager uthenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
     
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
-            .authorizeHttpRequests((authorizeHttpRequests) ->
+        http.csrf(AbstractHttpConfigurer::disable).cors(withDefaults())
+            .authorizeHttpRequests((authorizeHttpRequests) -> 
                 authorizeHttpRequests.anyRequest().permitAll());
-        
+
         // http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
         //     .sessionManagement((sessionManagement) -> 
         //         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -77,18 +78,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfiguration() {
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("*"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(false);
-        // config.setExposedHeaders(Arrays.asList("*"));
-        config.applyPermitDefaultValues();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
 
-        source.registerCorsConfiguration("/**", config);
+        configuration.setAllowCredentials(false);
+        // configuration.setExposedHeaders(Arrays.asList("*"));
+        configuration.applyPermitDefaultValues();
+
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
